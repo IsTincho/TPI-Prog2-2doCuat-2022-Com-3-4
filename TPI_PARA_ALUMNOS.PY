@@ -52,6 +52,9 @@ class Automovil:
         finally:
             conexion.cerrarConexion()
     
+    def borrar_automovil(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
     
     def modificar_automoviles(self):
         conexion = Conexiones()
