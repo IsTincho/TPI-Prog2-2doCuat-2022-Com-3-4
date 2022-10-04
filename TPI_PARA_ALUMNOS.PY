@@ -8,6 +8,7 @@ class ProgramaPrincipal:
             print("1- Cargar Automovil")
             print("2- Modificar Automovil")
             print("3- Eliminar Automovil")
+            print("4- Cargar disponibilidad")
             print("0- Salir de menu")
             nro = int(input("Por favor ingrese un número"))
             if nro == 1:
@@ -28,6 +29,11 @@ class ProgramaPrincipal:
                 modelo = input("Por favor ingrese el nombre del modelo: ")
                 automovil_a_eliminar = Automovil(marca,modelo)
                 automovil_a_eliminar.borrar_automovil()
+            if nro == 4:
+                marca = input("Por favor ingrese el nombre de la marca: ")
+                modelo = input("Por favor ingrese el nombre de la modelo: ")
+                automovil_a_aumentar = Automovil(marca,modelo,cantidadDisponibles)
+                automovil_a_aumentar.cargar_disponibilidad()
             if nro==0:
                 break
     
@@ -86,6 +92,17 @@ class Automovil:
         finally:
             conexion.cerrarConexion()
     
+    def cargar_disponibilidad(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("UPDATE AUTOMOVILES SET cantidadDisponibles=cantidadDisponibles+1 where marca='{}' and modelo='{}' ".format(self.cantidadDisponibles,self.marca,self.modelo))
+            conexion.miConexion.commit()
+            print("Automovil actualizado exitosamente")
+        except:
+            print("Error al actualizar la disponibilidad")
+        finally:
+            conexion.cerrarConexion()
         
     
 class Conexiones:
