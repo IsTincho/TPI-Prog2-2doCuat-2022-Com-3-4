@@ -9,6 +9,7 @@ class ProgramaPrincipal:
             print("2- Modificar Automovil")
             print("3- Eliminar Automovil")
             print("4- Cargar disponibilidad")
+            print("5- Listado de automoviles")
             print("0- Salir de menu")
             nro = int(input("Por favor ingrese un número"))
             if nro == 1:
@@ -34,6 +35,8 @@ class ProgramaPrincipal:
                 modelo = input("Por favor ingrese el nombre de la modelo: ")
                 automovil_a_aumentar = Automovil(marca,modelo,cantidadDisponibles)
                 automovil_a_aumentar.cargar_disponibilidad()
+            if nro == 5:
+                Automovil.listado_automoviles()
             if nro==0:
                 break
     
@@ -96,7 +99,7 @@ class Automovil:
         conexion = Conexiones()
         conexion.abrirConexion()
         try:
-            conexion.miCursor.execute("UPDATE AUTOMOVILES SET cantidadDisponibles=cantidadDisponibles+1 where marca='{}' and modelo='{}' ".format(self.cantidadDisponibles,self.marca,self.modelo))
+            conexion.miCursor.execute("UPDATE AUTOMOVILES SET cantidadDisponibles=cantidadDisponibles+1 where marca='{}' and modelo='{}' ".format(self.marca,self.modelo))
             conexion.miConexion.commit()
             print("Automovil actualizado exitosamente")
         except:
@@ -104,7 +107,23 @@ class Automovil:
         finally:
             conexion.cerrarConexion()
         
-    
+    @classmethod
+    def listado_automoviles(cls):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("SELECT * FROM AUTOMOVILES")
+            autos = conexion.miCursor.fetchall()
+            for auto in autos:
+                id,marca,modelo,precio,cantidadDisponible = auto
+                print("El auto con id: "+str(id)+" con marca: "+str(marca)+ " con modelo: "+str(modelo)+" con precio: "+str(precio)+" con cantidad: "+str(cantidadDisponible))
+        except:
+            print("Error")
+        finally:
+            conexion.cerrarConexion()
+                
+
+
 class Conexiones:
     
     def abrirConexion(self):
