@@ -52,7 +52,7 @@ class ProgramaPrincipal:
                 color = input("Por favor ingrese el color de la motocicleta: ")
                 fechaUltimoPrecio = input("Por favor ingrese la fecha del ultimo precio de la motocicleta: ")
                 nueva_motocicleta = Motocicleta(marca,modelo,precio, cilindrada, color, fechaUltimoPrecio)
-                nueva_motocicleta.cargar_motodicletas()
+                nueva_motocicleta.cargar_motocicletas()
                 print("\n")
             if nro == 7:
                 Motocicleta.crearTablasMoto_H()
@@ -69,6 +69,15 @@ class ProgramaPrincipal:
         conexion.miCursor.execute("CREATE TABLE AUTOMOVILES (id_automovil INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio FLOAT NOT NULL, cantidadDisponibles INTEGER NOT NULL,UNIQUE(marca,modelo))")    
         conexion.miConexion.commit()       
         conexion.cerrarConexion()
+
+    def crearTablasMoto(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        conexion.miCursor.execute("DROP TABLE IF EXISTS MOTOCICLETAS")
+        conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30)")    
+        conexion.miConexion.commit()       
+        conexion.cerrarConexion()
+
 
 class Automovil:
     def __init__(self, marca, modelo,precio=None,cantidadDisponibles=None):
@@ -149,16 +158,7 @@ class Automovil:
     # -------------------------------------------------------------------------
     # Motocicletas
 
-    def crearTablasMoto(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
-        conexion.miCursor.execute("DROP TABLE IF EXISTS MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30)")    
-        conexion.miConexion.commit()       
-        conexion.cerrarConexion()
 
-
-    
 
 
 class Motocicleta:
@@ -181,17 +181,18 @@ class Motocicleta:
 
 
     # Error al cargar - solucionar xd
-    def cargar_motodicletas(self):
+    def cargar_motocicletas(self):
         conexion = Conexiones()
         conexion.abrirConexion()
         try:
-            conexion.miCursor.execute("INSERT INTO MOTOCICLETAS(marca,modelo,precio,cilindrada, color, fechaUltimoPrecio) VALUES('{}', '{}','{}','{}','{}','{}')".format(self.marca, self.modelo, self.precio, self.cilindrada, self.color, self.fechaUltimoPrecio))
+            conexion.miCursor.execute("INSERT INTO MOTOCICLETAS(marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color,self.fechaUltimoPrecio))
             conexion.miConexion.commit()
             print("Motocicleta cargada exitosamente")
         except:
             print("Error al agregar la motocicleta")
         finally:
             conexion.cerrarConexion()
+    
 
     def actualizar_precios(self):
         conexion = Conexiones()
