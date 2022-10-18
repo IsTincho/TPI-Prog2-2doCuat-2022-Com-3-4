@@ -74,7 +74,7 @@ class ProgramaPrincipal:
         conexion = Conexiones()
         conexion.abrirConexion()
         conexion.miCursor.execute("DROP TABLE IF EXISTS MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30)")    
+        conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30))")    
         conexion.miConexion.commit()       
         conexion.cerrarConexion()
 
@@ -235,4 +235,5 @@ class Conexiones:
             
 programa = ProgramaPrincipal()
 programa.crearTablas()
+programa.crearTablasMoto()
 programa.menu()
