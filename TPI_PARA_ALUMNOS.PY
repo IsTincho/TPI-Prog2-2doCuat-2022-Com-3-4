@@ -56,7 +56,7 @@ class ProgramaPrincipal:
                 nueva_motocicleta.cargar_motocicletas()
                 print("\n")
             if nro == 7:
-                Motocicleta.pasar_historico(self)
+                Motocicleta.pasar_historico(nueva_motocicleta)
                 Motocicleta.actualizar_precios(self)
                 print("\n")
             if nro==0:
@@ -229,7 +229,7 @@ class Motocicleta:
         conexion = Conexiones()
         conexion.abrirConexion()
         try:
-            conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS(marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color,self.fechaUltimoPrecio),"SELECT * FROM MOTOCICLETAS")
+            conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS(marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color,self.fechaUltimoPrecio))
             conexion.miConexion.commit()
         except:
             print("error")
