@@ -78,15 +78,6 @@ class ProgramaPrincipal:
         conexion.miConexion.commit()       
         conexion.cerrarConexion()
 
-    def crearTablasMoto_H(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
-        conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS SELECT * FROM MOTOCICLETAS")    
-        conexion.miConexion.commit()       
-        conexion.cerrarConexion()
-
-
 
 class Automovil:
     def __init__(self, marca, modelo,precio=None,cantidadDisponibles=None):
@@ -190,6 +181,14 @@ class Motocicleta:
         finally:
             conexion.cerrarConexion()
     
+    def crearTablasMoto_H():
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
+        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS SELECT * FROM MOTOCICLETAS")    
+        conexion.miConexion.commit()       
+        conexion.cerrarConexion()
+    
     def actualizar_precios(self):
         conexion = Conexiones()
         conexion.abrirConexion()
@@ -232,5 +231,4 @@ class Conexiones:
 programa = ProgramaPrincipal()
 programa.crearTablas()
 programa.crearTablasMoto()
-programa.crearTablasMoto_H()
 programa.menu()
