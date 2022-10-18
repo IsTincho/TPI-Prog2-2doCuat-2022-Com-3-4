@@ -1,4 +1,5 @@
 import sqlite3
+from typing import final
 
 class ProgramaPrincipal:
 
@@ -55,7 +56,7 @@ class ProgramaPrincipal:
                 nueva_motocicleta.cargar_motocicletas()
                 print("\n")
             if nro == 7:
-                Motocicleta.crearTablasMoto_H(self)
+                Motocicleta.pasar_historico(self)
                 Motocicleta.actualizar_precios(self)
                 print("\n")
             if nro==0:
@@ -81,8 +82,8 @@ class ProgramaPrincipal:
         conexion = Conexiones()
         conexion.abrirConexion()
         conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS AS SELECT * FROM MOTOCICLETAS")    
-        conexion.miConexion.commit()       
+        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS (id_moto INTEGER , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30))")
+        conexion.miConexion.commit()
         conexion.cerrarConexion()
 
 
@@ -203,7 +204,7 @@ class Motocicleta:
         try:
             conexion.miCursor.execute("UPDATE MOTOCICLETAS SET precio=precio*1.10")
             conexion.miConexion.commit()
-            print("Automovil actualizado exitosamente")
+            print("Motocicletas actualiza exitosamente")
         except:
             print("Error")
         finally:
@@ -223,6 +224,17 @@ class Motocicleta:
             print("Error")
         finally:
             conexion.cerrarConexion()
+    
+    def pasar_historico(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS(marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color,self.fechaUltimoPrecio),"SELECT * FROM MOTOCICLETAS")
+            conexion.miConexion.commit()
+        except:
+            print("error")
+        finally:
+            conexion.cerrarConexion
 
 
 class Conexiones:
