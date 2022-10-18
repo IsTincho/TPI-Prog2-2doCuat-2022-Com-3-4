@@ -55,9 +55,8 @@ class ProgramaPrincipal:
                 nueva_motocicleta.cargar_motocicletas()
                 print("\n")
             if nro == 7:
-                Motocicleta.crearTablasMoto_H()
-                Motocicleta.actualizar_precios(precio)
-                Motocicleta.listado_motocicletas()
+                Motocicleta.crearTablasMoto_H(self)
+                Motocicleta.actualizar_precios(self)
                 print("\n")
             if nro==0:
                 break
@@ -75,6 +74,14 @@ class ProgramaPrincipal:
         conexion.abrirConexion()
         conexion.miCursor.execute("DROP TABLE IF EXISTS MOTOCICLETAS")
         conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30))")    
+        conexion.miConexion.commit()       
+        conexion.cerrarConexion()
+
+    def crearTablasMoto_H(self):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
+        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS AS SELECT * FROM MOTOCICLETAS")    
         conexion.miConexion.commit()       
         conexion.cerrarConexion()
 
@@ -98,7 +105,6 @@ class Automovil:
             print("Error al agregar un automovil")
         finally:
             conexion.cerrarConexion()
-
 
 
     def modificar_automoviles(self):
@@ -126,6 +132,7 @@ class Automovil:
         finally:
             conexion.cerrarConexion()
     
+
     def cargar_disponibilidad(self):
         conexion = Conexiones()
         conexion.abrirConexion()
@@ -181,14 +188,15 @@ class Motocicleta:
         finally:
             conexion.cerrarConexion()
     
-    def crearTablasMoto_H():
+    
+    def crearTablasMoto_H(self):
         conexion = Conexiones()
         conexion.abrirConexion()
         conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS SELECT * FROM MOTOCICLETAS")    
+        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS AS SELECT * FROM MOTOCICLETAS")    
         conexion.miConexion.commit()       
         conexion.cerrarConexion()
-    
+
     def actualizar_precios(self):
         conexion = Conexiones()
         conexion.abrirConexion()
@@ -231,4 +239,5 @@ class Conexiones:
 programa = ProgramaPrincipal()
 programa.crearTablas()
 programa.crearTablasMoto()
+programa.crearTablasMoto_H()
 programa.menu()
