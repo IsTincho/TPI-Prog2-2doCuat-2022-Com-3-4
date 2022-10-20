@@ -13,6 +13,7 @@ class ProgramaPrincipal:
             print("5- Listado de automoviles")
             print("6- Cargar Motocicleta")
             print("7- Actualizar precios")
+            print("8- Buscar registros de motocicletas anteriores a una Fecha")
             print("0- Salir de menu \n")
             nro = int(input("Por favor ingrese un número \n"))
             if nro == 1:
@@ -58,6 +59,10 @@ class ProgramaPrincipal:
             if nro == 7:
                 Motocicleta.pasar_historico()
                 Motocicleta.actualizar_precios(self)
+                print("\n")
+            if nro == 8:
+                fechaAIngresar = input("Ingrese una fecha para buscar los registros con el formato: 'año-mes-dia': ")
+                Motocicleta.listado_fechas(fechaAIngresar)
                 print("\n")
             if nro==0:
                 break
@@ -232,6 +237,21 @@ class Motocicleta:
             print("Ha ocurrido un error al pasar los historiales")
         finally:
             conexion.cerrarConexion
+
+    @classmethod
+    def listado_fechas(cls,fechaAIngresar):
+        conexion = Conexiones()
+        conexion.abrirConexion()
+        try:
+            conexion.miCursor.execute("SELECT * FROM MOTOCICLETAS WHERE fechaUltimoPrecio <= '{}'".format(fechaAIngresar))
+            motos = conexion.miCursor.fetchall()
+            for moto in motos:
+                id,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio = moto
+                print("La moto con ID: "+str(id)+" marca: "+str(marca)+ " modelo: "+str(modelo)+" precio: "+str(precio)+" cilindrada: "+str(cilindrada)+" color "+str(color)+" fecha: "+str(fechaUltimoPrecio))
+        except:
+            print("Error no se han encontrado registros anteriores a esa fecha")
+        finally:
+            conexion.cerrarConexion()
 
 
 class Conexiones:
