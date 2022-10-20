@@ -51,12 +51,12 @@ class ProgramaPrincipal:
                 precio = input("Por favor ingrese el precio de la motocicleta: ")
                 cilindrada = input("Por favor ingrese la cilindrada la motocicleta: ")
                 color = input("Por favor ingrese el color de la motocicleta: ")
-                fechaUltimoPrecio = input("Por favor ingrese la fecha del ultimo precio de la motocicleta: ")
-                nueva_motocicleta = Motocicleta(marca,modelo,precio, cilindrada, color, fechaUltimoPrecio)
+                
+                nueva_motocicleta = Motocicleta(marca,modelo,precio, cilindrada, color)
                 nueva_motocicleta.cargar_motocicletas()
                 print("\n")
             if nro == 7:
-                Motocicleta.pasar_historico(nueva_motocicleta)
+                Motocicleta.pasar_historico()
                 Motocicleta.actualizar_precios(self)
                 print("\n")
             if nro==0:
@@ -74,7 +74,7 @@ class ProgramaPrincipal:
         conexion = Conexiones()
         conexion.abrirConexion()
         conexion.miCursor.execute("DROP TABLE IF EXISTS MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30))")    
+        conexion.miCursor.execute("CREATE TABLE MOTOCICLETAS (id_moto INTEGER PRIMARY KEY , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio DATETIME DEFAULT CURRENT_TIMESTAMP)")    
         conexion.miConexion.commit()       
         conexion.cerrarConexion()
 
@@ -82,7 +82,7 @@ class ProgramaPrincipal:
         conexion = Conexiones()
         conexion.abrirConexion()
         conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS (id_moto INTEGER , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio VARCHAR(30))")
+        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS (id_moto INTEGER , marca  VARCHAR(30) ,modelo  VARCHAR(30),precio INTEGER, cilindrada VARCHAR(30), color VARCHAR(30), fechaUltimoPrecio DATETIME)")
         conexion.miConexion.commit()
         conexion.cerrarConexion()
 
@@ -168,7 +168,7 @@ class Automovil:
 
 
 class Motocicleta:
-    def __init__(self, marca, modelo, precio, cilindrada, color, fechaUltimoPrecio):
+    def __init__(self, marca, modelo, precio, cilindrada, color, fechaUltimoPrecio=None):
         self.marca = marca
         self.modelo = modelo
         self.precio = precio
@@ -181,7 +181,7 @@ class Motocicleta:
         conexion = Conexiones()
         conexion.abrirConexion()
         try:
-            conexion.miCursor.execute("INSERT INTO MOTOCICLETAS(marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color,self.fechaUltimoPrecio))
+            conexion.miCursor.execute("INSERT INTO MOTOCICLETAS(marca,modelo,precio,cilindrada,color) VALUES('{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color))
             conexion.miConexion.commit()
             print("Motocicleta cargada exitosamente")
         except:
@@ -189,14 +189,6 @@ class Motocicleta:
         finally:
             conexion.cerrarConexion()
     
-    
-    def crearTablasMoto_H(self):
-        conexion = Conexiones()
-        conexion.abrirConexion()
-        conexion.miCursor.execute("DROP TABLE IF EXISTS HISTORICO_MOTOCICLETAS")
-        conexion.miCursor.execute("CREATE TABLE HISTORICO_MOTOCICLETAS AS SELECT * FROM MOTOCICLETAS")    
-        conexion.miConexion.commit()       
-        conexion.cerrarConexion()
 
     def actualizar_precios(self):
         conexion = Conexiones()
@@ -225,14 +217,18 @@ class Motocicleta:
         finally:
             conexion.cerrarConexion()
     
-    def pasar_historico(self):
+    @classmethod
+    def pasar_historico(cls):
         conexion = Conexiones()
         conexion.abrirConexion()
         try:
-            conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS(marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}')".format(self.marca,self.modelo,self.precio,self.cilindrada,self.color,self.fechaUltimoPrecio))
-            conexion.miConexion.commit()
+            conexion.miCursor.execute("SELECT * FROM MOTOCICLETAS")
+            motos = conexion.miCursor.fetchall()
+            for moto in motos:
+                id,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio = moto
+                conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS(id_moto,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}','{}')".format(id,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio))
         except:
-            print("error")
+            print("Error al pasar los historicos")
         finally:
             conexion.cerrarConexion
 
