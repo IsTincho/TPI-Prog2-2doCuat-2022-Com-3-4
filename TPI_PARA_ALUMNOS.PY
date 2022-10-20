@@ -194,7 +194,7 @@ class Motocicleta:
         conexion = Conexiones()
         conexion.abrirConexion()
         try:
-            conexion.miCursor.execute("UPDATE MOTOCICLETAS SET precio=precio*1.10")
+            conexion.miCursor.execute("UPDATE MOTOCICLETAS SET precio=precio+precio*0.1")
             conexion.miConexion.commit()
             print("Motocicletas actualiza exitosamente")
         except:
@@ -226,9 +226,10 @@ class Motocicleta:
             motos = conexion.miCursor.fetchall()
             for moto in motos:
                 id,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio = moto
-                conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS(id_moto,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio) VALUES('{}','{}','{}','{}','{}','{}','{}')".format(id,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio))
+                conexion.miCursor.execute("INSERT INTO HISTORICO_MOTOCICLETAS (id_moto, marca, modelo, precio, cilindrada, color, fechaUltimoPrecio) VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(id,marca,modelo,precio,cilindrada,color,fechaUltimoPrecio))
+            conexion.miConexion.commit()
         except:
-            print("Error al pasar los historicos")
+            print("Ha ocurrido un error al pasar los historiales")
         finally:
             conexion.cerrarConexion
 
